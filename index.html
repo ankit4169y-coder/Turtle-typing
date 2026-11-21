@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Turtle Typing - Free Typing Speed Test</title>
+    <meta name="description" content="Practice typing with Turtle Typing. Improve your typing speed, accuracy and WPM with a free online typing test.">
+    <meta name="theme-color" content="#0f1117">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <span class="turtle">🐢</span>
+            <span>Turtle<span class="accent">Typing</span></span>
+        </div>
+
+        <nav>
+            <a href="#test">Typing Test</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <div class="nav-info">
+            <span>WPM</span>
+            <strong id="nav-wpm">0</strong>
+        </div>
+    </header>
+
+    <main id="test">
+
+        <section class="settings">
+
+            <div class="setting-group">
+                <button class="mode active" data-mode="time">◷ time</button>
+                <button class="mode" data-mode="words">A words</button>
+            </div>
+
+            <div class="setting-group">
+                <button class="duration" data-time="15">15</button>
+                <button class="duration" data-time="30">30</button>
+                <button class="duration active" data-time="60">60</button>
+                <button class="duration" data-time="120">120</button>
+            </div>
+
+            <button id="difficulty" class="difficulty">
+                ⚡ normal
+            </button>
+
+        </section>
+
+        <section class="typing-section">
+
+            <div class="language">🌐 english</div>
+
+            <div class="stats">
+                <div>time <strong id="timer">60</strong></div>
+                <div>wpm <strong id="wpm">0</strong></div>
+                <div>acc <strong id="accuracy">100%</strong></div>
+            </div>
+
+            <div id="words" class="words" tabindex="0">
+                <div id="word-list"></div>
+                <div id="typing-cursor" class="typing-cursor"></div>
+            </div>
+
+            <textarea
+                id="typing-input"
+                class="typing-input"
+                aria-label="Type the displayed words"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+            ></textarea>
+
+            <div class="restart">
+                <button id="restart" title="Restart test">↻</button>
+            </div>
+
+            <div class="keyboard-hint">
+                <kbd>tab</kbd> + <kbd>enter</kbd>
+                <span>restart test</span>
+                <kbd>esc</kbd>
+                <span>restart</span>
+            </div>
+
+            <div id="result" class="result hidden">
+                <h2>Test completed!</h2>
+
+                <div class="result-grid">
+                    <div>
+                        <strong id="final-wpm">0</strong>
+                        <span>WPM</span>
+                    </div>
+
+                    <div>
+                        <strong id="final-accuracy">100%</strong>
+                        <span>Accuracy</span>
+                    </div>
+                </div>
+
+                <button id="try-again">Try Again ↻</button>
+            </div>
+
+        </section>
+
+        <section id="about" class="about">
+            <h2>About Turtle Typing</h2>
+            <p>
+                Practice your typing, improve your speed and
+                build accuracy with Turtle Typing.
+            </p>
+        </section>
+
+    </main>
+
+    <footer>
+        🐢 Turtle<span class="accent">Typing</span>
+        <p>Practice today. Improve tomorrow.</p>
+        <small>© 2026 Turtle Typing</small>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

@@ -265,9 +265,8 @@ body.focus .words {
 
     transform: translate3d(0, 0, 0);
 
-    transition:
-        transform 115ms cubic-bezier(0.22, 1, 0.36, 1),
-        height 115ms ease;
+    /* position JS (script.js) smooth karti hai, yahan transform transition nahi */
+    transition: height 100ms ease;
 
     will-change: transform;
     animation: cursor-blink 1s ease-in-out infinite;

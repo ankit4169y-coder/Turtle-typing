@@ -59,6 +59,20 @@ let startTime = null;
 let timerInterval = null;
 
 let cursorFrame = null;
+
+// smooth cursor (har frame pe target ki taraf glide karta hai)
+// CURSOR_SMOOTH jitna bada, cursor utna slow aur smooth (ms me, 35-80 try karo)
+const CURSOR_SMOOTH = 55;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let cursorX = 0;
+let cursorY = 0;
+let targetX = 0;
+let targetY = 0;
+let cursorAnim = null;
+let lastFrameTime = 0;
+let snapCursor = true;
+let lastLineTop = -1;
 let renderedLength = 0;
 let tabPressed = false;
 
@@ -132,6 +146,8 @@ function renderText() {
     targetText = "";
     renderedLength = 0;
     scrollY = 0;
+    snapCursor = true;
+    lastLineTop = -1;
     wordList.style.transform = "translateY(0)";
 
     if (mode === "words") {
@@ -167,6 +183,32 @@ function measureLines() {
 
 // SMOOTH CURSOR
 
+function paintCursor() {
+    cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+}
+
+function animateCursor(now) {
+    const dt = Math.min(now - lastFrameTime, 50);
+    lastFrameTime = now;
+
+    // exponential smoothing: fast typing me bhi cursor peeche nahi rehta
+    const k = 1 - Math.exp(-dt / CURSOR_SMOOTH);
+
+    cursorX += (targetX - cursorX) * k;
+    cursorY += (targetY - cursorY) * k;
+
+    if (Math.abs(targetX - cursorX) < 0.15 && Math.abs(targetY - cursorY) < 0.15) {
+        cursorX = targetX;
+        cursorY = targetY;
+        paintCursor();
+        cursorAnim = null;
+        return;
+    }
+
+    paintCursor();
+    cursorAnim = requestAnimationFrame(animateCursor);
+}
+
 function moveCursor() {
     if (characterElements.length === 0) return;
 
@@ -181,11 +223,29 @@ function moveCursor() {
         wordList.style.transform = `translateY(${-scrollY}px)`;
     }
 
-    const x = wordList.offsetLeft + element.offsetLeft + (atEnd ? element.offsetWidth : 0);
-    const y = wordList.offsetTop + element.offsetTop - scrollY;
+    targetX = wordList.offsetLeft + element.offsetLeft + (atEnd ? element.offsetWidth : 0);
+    targetY = wordList.offsetTop + element.offsetTop - scrollY;
 
     cursor.style.height = `${element.offsetHeight}px`;
-    cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+    // nayi line pe cursor poori screen cross na kare, seedha jump kare
+    if (element.offsetTop !== lastLineTop) {
+        lastLineTop = element.offsetTop;
+        snapCursor = true;
+    }
+
+    if (snapCursor || reduceMotion) {
+        snapCursor = false;
+        cursorX = targetX;
+        cursorY = targetY;
+        paintCursor();
+        return;
+    }
+
+    if (!cursorAnim) {
+        lastFrameTime = performance.now();
+        cursorAnim = requestAnimationFrame(animateCursor);
+    }
 }
 
 function requestCursorMove() {
@@ -540,6 +600,7 @@ document.getElementById("difficulty").addEventListener("click", () => {
 window.addEventListener("resize", () => {
     measureLines();
     scrollY = 0;
+    snapCursor = true;
     wordList.style.transform = "translateY(0)";
     requestCursorMove();
 });
